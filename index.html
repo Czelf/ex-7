@@ -1,3 +1,7 @@
+<!-- opdracht 7 van Arno Cuyckens, maar hier had ook Jonas Cristens
+ kunnen staan, hij is mijn bron van inspiratie, mijn steun en toeverlaat
+ hij is een gewone, maar een kei in programmeren, ik niet-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,7 +12,7 @@
 
         /*drone URLs en IDs in console via postman code (dit werkt!!)*/
 
-       var settings = {
+      /* var settings = {
             "async": true,
             "crossDomain": true,
             "url": "https://web-ims.thomasmore.be/datadistribution/API/2.0/drones?format=json",
@@ -22,17 +26,91 @@
 
         $.ajax(settings).done(function (response) {
             console.log(response);
+        }); */
+
+
+/*-----------------------------------------------------------------------------------------------------*/
+        /* even gaan spieken bij concurrentie, kuch kuch alles gestolen van Jonas*/
+/*-----------------------------------------------------------------------------------------------------*/
+
+
+        var settings = function (url) {
+            this.url = url;
+            this.method = "GET";
+            this.datatype = "json";
+            this.headers = {
+                "authorization" : "Basic aW1zOno1MTJtVDRKeVgwUExXZw=="
+            };
+        };
+
+        $.ajax(settings).done(function (url) {
+            console.log(url);
         });
 
 
+        //drones settings
+
+        var dronesSettings = new settings("https://web-ims.thomasmore.be/datadistribution/API/2.0/drones?format=json");
+        $.ajax(dronesSettings).done(function (drones) {
+
+            //voor elke drone
+            drones.forEach(function(drones) {
+
+                var droneDetailSetting = new settings("https://web-ims.thomasmore.be/datadistribution/API/2.0/drones/"+drones.id+"?format=json");
+                $.ajax(droneDetailSetting).done(function (droneDetails) {
 
 
+                    var fileSetting = new settings("https://web-ims.thomasmore.be/datadistribution/API/2.0/files?drone_id.is="+droneDetails.id+"&format=json");
+
+                    $.ajax(fileSetting).done(function (files) {
+                        files.forEach(function(files){
+
+                            var filesDetailSetting = new settings("https://web-ims.thomasmore.be/datadistribution/API/2.0/files/"+files.id+"?format=json");
+
+
+                            $.ajax(filesDetailSetting).done(function (fileDetails) {
+
+                                $("#tabel").append('<tr>' +
+                                        '<td>'+droneDetails.name+'</td>' +
+                                        '<td>'+droneDetails.mac_address+'</td>' +
+                                        '<td>'+files.id+'</td>' +
+                                        '<td>'+fileDetails.date_first_record+'</td>' +
+                                        '<td>'+fileDetails.date_last_record+'</td></tr>');
+
+                            }).fail(function() {
+                                //leeg laten anders onverklaarbare error
+                            });
+                        });
+
+                    }).fail(function() {
+                        alert('An error has occurred - you may not have been entered');
+                    });
+
+                }).fail(function() {
+                    alert('An error has occurred - you may not have been entered');
+                });
+            });
+
+        }).fail(function() {
+            alert('An error has occurred - you may not have been entered');
+        });
     </script>
-
 </head>
-<body>
 
+
+<body>
+<div>
+    <h1>Opracht 7</h1>
+    <table id="tabel">
+        <tr> <!-- tabel headers rest automatische append -->
+            <th>Naam drone</th>
+            <th>Mac_adres drone</th>
+            <th>id file</th>
+            <th>Eerste record</th>
+            <th>Laatste Record</th>
+        </tr>
+    </table>
+</div>
 
 </body>
 </html>
-
