@@ -6,12 +6,12 @@
     <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
     <script>
 
-        //drone URLs en IDs in console via postman code
+        /*drone URLs en IDs in console via postman code (dit werkt!!)*/
 
        var settings = {
             "async": true,
             "crossDomain": true,
-            "url": "https://web-ims.thomasmore.be/datadistribution/API/2.0/drones",
+            "url": "https://web-ims.thomasmore.be/datadistribution/API/2.0/drones?format=json",
             "method": "GET",
             "headers": {
                 "authorization": "Basic aW1zOno1MTJtVDRKeVgwUExXZw==",
@@ -23,6 +23,9 @@
         $.ajax(settings).done(function (response) {
             console.log(response);
         });
+
+
+
 
     </script>
 
